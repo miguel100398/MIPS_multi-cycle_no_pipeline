@@ -2,7 +2,7 @@
 //Author: Miguel Bucio miguel_angel_bucio@hotmail.com
 //date: November 10 2021
 
-module register_file(
+module register_file#(
     parameter NUM_REGISTERS = 32,
     parameter DATA_WIDTH    = 32,
     //Localparam
