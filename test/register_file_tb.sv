@@ -58,7 +58,7 @@ module register_file_tb;
     end
 
     //Write register
-    task automatic write_register (addr_t addr = 0, data_t data = 0);
+    task write_register (addr_t addr = 0, data_t data = 0);
         cb.WE3 <= 1'b1;
         cb.A3  <= addr;
         cb.WD3 <= data;
@@ -66,9 +66,9 @@ module register_file_tb;
         cb.WE3 <= 1'b0;
         cb.A3  <= 0;
         cb.WD3 <= 0;
-    endtask: write_data
+    endtask: write_register
 
-    task automatic read_register (bit port_1 = 1, addr_t addr = 0, output data_t data);
+    task read_register (bit port_1 = 1, addr_t addr = 0, output data_t data);
         if (port_1) begin
             read_register_1(addr, data);
         end else begin
@@ -76,30 +76,34 @@ module register_file_tb;
         end
     endtask: read_register
 
-    task automatic read_register_1(addr_t addr = 0, output data_t data);
+    task read_register_1(addr_t addr = 0, output data_t data);
         cb.A1 <= addr;
         @(cb);
         data <= cb.RD1;
         cb.A1 <= 0;
     endtask: read_register_1
 
-    task automatic read_register_2(addr_t addr = 0, output data_t data);
+    task read_register_2(addr_t addr = 0, output data_t data);
         cb.A2 <= addr;
         @(cb);
         data <= cb.RD2;
         cb.A2 <= 0;
     endtask: read_register_2
 
-    task automatic test();
+    task test();
         data_t data1;
         data_t data2;
         rst_n = 0;
+        A1 = 0;
+        A2 = 0;
+        A3 = 0;
+        WE3 = 0;
+        WD3 = 0;
         #20;
         rst_n = 1;
         @(cb);
         //Write all registers
         for (int i=0; i<NUM_REGISTERS; i++) begin 
-            @(cb);
             write_register(i, $urandom());
         end
         #100;
@@ -107,8 +111,8 @@ module register_file_tb;
         fork
             begin 
                 //Read registers from bottoom to top
+                @(cb);
                 for (int i=0; i<NUM_REGISTERS; i++) begin
-                    @(cb);
                     read_register(
                         .port_1(1),
                         .addr(i),
@@ -118,8 +122,8 @@ module register_file_tb;
             end
             begin
                 //Read registers from top to bottom
+                @(cb);
                 for(int i=NUM_REGISTERS-1; i>=0; i--) begin
-                    @(cb);
                     read_register(
                         .port_1(0),
                         .addr(i),
