@@ -14,6 +14,11 @@ module MIPS(
 import MIPS_pkg::*;
 import ALU_pkg::*;
 
+////////////////////////////////////////////////Signals//////////////////////////////////////////////
+//Instruction
+mips_r_type R_instruction;
+mips_i_type I_instruction;
+mips_j_type J_instruction;
 //PC register signals
 logic en_pc;
 mips_pc_t next_pc;
@@ -107,6 +112,7 @@ mips_data_t alurslt_mux_in[2];
 mips_data_t alurslt_mux_out;
 
 
+///////////////////////////////////////////Instantiate Modules//////////////////////////////////////////////////
 //PC register
 PC_reg #(
     .PC_WIDTH(MIPS_PC_WIDTH)
@@ -284,6 +290,13 @@ mux#(
     .sel(alurslt_mux_sel),
     .d_out(alurslt_mux_out)
 );
+
+/////////////////////////////////////////////Interconect Modules////////////////////////////////////////////////////
+
+//Instruction (Union is not available in Quartus, work around)
+assign R_instruction = instruction;
+assign I_instruction = instruction;
+assign J_instruction = instruction; 
 
 
 endmodule: MIPS
