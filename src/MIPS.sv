@@ -4,7 +4,12 @@
 
 module MIPS(
     input  logic clk,
-    input  logic rst_n
+    input  logic rst_n,
+    //Memory signals
+    input  mips_data_t rd_data_mem,
+    output mips_pc_t   addr_mem,
+    output mips_data_t wr_data_mem,
+    output logic       wr_en_mem
 );
 import MIPS_pkg::*;
 import ALU_pkg::*;
