@@ -8,6 +8,10 @@ module MIPS(
 );
 import MIPS_pkg::*;
 
+//PC register signals
+logic en_pc;
+mips_pc_t next_pc;
+mips_pc_t pc;
 //Register file signals
 mips_reg_addr_t rf_A1;
 mips_reg_addr_t rf_A2;
@@ -16,6 +20,17 @@ mips_data_t     rf_RD1;
 mips_data_t     rf_RD2;
 mips_data_t     rf_WD3;
 logic           rf_WE3;
+
+//PC register
+PC_reg #(
+    .PC_WIDTH(MIPS_PC_WIDTH)
+)pc_inst(
+    .clk(clk),
+    .rst_n(rst_n),
+    .en(en_pc),
+    .next_pc(next_pc),
+    .pc(pc)
+);
 
 //Register file
 register_file#(
@@ -32,6 +47,7 @@ register_file#(
     .WD3(rf_WD3),
     .WE3(rf_WE3)
 );
+
 
 
 endmodule: MIPS
