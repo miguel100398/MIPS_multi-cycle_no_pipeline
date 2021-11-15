@@ -20,4 +20,4 @@ always_ff @(posedge clk or negedge rst_n) begin
     end
 end 
 
-endmodule 
+endmodule: PC_reg 

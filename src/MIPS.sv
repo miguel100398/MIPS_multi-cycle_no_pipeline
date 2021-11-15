@@ -20,6 +20,23 @@ mips_data_t     rf_RD1;
 mips_data_t     rf_RD2;
 mips_data_t     rf_WD3;
 logic           rf_WE3;
+//Instruction register
+logic en_instr_reg;
+mips_instruction_t next_instruction;
+mips_instruction_t instruction;
+//Data register
+mips_data_t next_data;
+mips_data_t data;
+//Reg_a
+mips_data_t next_A;
+mips_data_t A;
+//Reg_b
+mips_data_t next_B;
+mips_data_t B;
+//ALU reg
+mips_data_t next_ALU_result;
+mips_data_t ALU_result;
+
 
 //PC register
 PC_reg #(
@@ -48,6 +65,47 @@ register_file#(
     .WE3(rf_WE3)
 );
 
+//Instruction register
+register_norst#(
+    .WIDTH(MIPS_INSTRUCTION_WIDTH)
+) instruction_reg(
+    .clk(clk),
+    .en(en_instr_reg),
+    .D(next_instruction),
+    .Q(instruction)
+);
+//Data register
+register_norst_noen#(
+    .WIDTH(MIPS_DATA_WIDTH)
+) data_reg(
+    .clk(clk),
+    .D(next_data),
+    .Q(data)
+);
+//Register A
+register_norst_noen#(
+    .WIDTH(MIPS_DATA_WIDTH)
+) reg_A(
+    .clk(clk),
+    .D(next_A),
+    .Q(A)
+);
+//register B
+register_norst_noen#(
+    .WIDTH(MIPS_DATA_WIDTH)
+) reg_B(
+    .clk(clk),
+    .D(next_B),
+    .Q(B)
+);
+//ALU register
+register_norst_noen#(
+    .WIDTH(MIPS_DATA_WIDTH)
+) ALU_reg(
+    .clk(clk),
+    .D(next_ALU_result),
+    .Q(ALU_result)
+);
 
 
 endmodule: MIPS
