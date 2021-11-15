@@ -36,6 +36,12 @@ mips_data_t B;
 //ALU reg
 mips_data_t next_ALU_result;
 mips_data_t ALU_result;
+//Sign extend
+mips_immediate_t sign_extend_imm;
+mips_data_t      sign_extended_imm;
+//Zero extend
+mips_immediate_t zero_extend_imm;
+mips_data_t      zero_extendedn_imm;
 
 
 //PC register
@@ -107,5 +113,23 @@ register_norst_noen#(
     .Q(ALU_result)
 );
 
+//Sign extend
+bit_extension#(
+    .SIGN_EXTEND(1'b1),
+    .DATA_IN_WIDTH(MIPS_IMMEDIATE_WIDTH),
+    .DATA_OUT_WIDTH(MIPS_DATA_WIDTH)
+) sign_extend(
+    .d_in(sign_extend_imm),
+    .d_out(sign_extended_imm)
+);
+//Zero extend
+bit_extension#(
+    .SIGN_EXTEND(1'b0),
+    .DATA_IN_WIDTH(MIPS_IMMEDIATE_WIDTH),
+    .DATA_OUT_WIDTH(MIPS_DATA_WIDTH)
+) zero_extend(
+    .d_in(zero_extend_imm),
+    .d_out(zero_extendedn_imm)
+);
 
 endmodule: MIPS
