@@ -21,6 +21,20 @@ mips_data_t     rf_RD1;
 mips_data_t     rf_RD2;
 mips_data_t     rf_WD3;
 logic           rf_WE3;
+//Control unit signals
+mips_op_e       ctrl_op;
+mips_funct_e    ctrl_funct;
+logic           ctrl_IorD;
+logic           ctrl_MemWrite;
+logic           ctrl_IRWrite;
+logic           ctrl_RegDst;
+logic           ctrl_MemtoReg;
+logic           ctrl_PCWrite;
+logic           ctrl_PCSrc;
+ALU_ctrl_e      ctrl_ALUControl;  
+logic[1:0]      ctrl_ALUSrcB;
+logic           ctrl_ALUSrcA;
+logic           ctrl_RegWrite;     
 //ALU signals
 mips_data_t     alu_src_A;
 mips_data_t     alu_src_B;
@@ -113,6 +127,25 @@ register_file#(
     .RD2(rf_RD2),
     .WD3(rf_WD3),
     .WE3(rf_WE3)
+);
+
+//Control Unit
+MIPS_ctrl_unit ctrl(
+    .clk(clk),
+    .rst_n(rst_n),
+    .op(ctrl_op),
+    .funct(ctrl_funct),
+    .IorD(ctrl_IorD),
+    .MemWrite(ctrl_MemWrite),
+    .IRWrite(ctrl_IRWrite),
+    .RegDst(ctrl_RegDst),
+    .MemtoReg(ctrl_MemtoReg),
+    .PCWrite(ctrl_PCWrite),
+    .PCSrc(ctrl_PCSrc),
+    .ALUControl(ctrl_ALUControl),
+    .ALUSrcA(ctrl_ALUSrcA),
+    .ALUSrcB(ctrl_ALUSrcB),
+    .RegWrite(ctrl_RegWrite)
 );
 
 //ALU

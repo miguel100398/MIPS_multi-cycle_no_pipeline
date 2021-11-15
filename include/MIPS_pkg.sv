@@ -12,6 +12,8 @@ package MIPS_pkg;
     parameter  int unsigned  MIPS_PC_WIDTH          = 32;
     parameter  int unsigned  MIPS_INSTRUCTION_WIDTH = 32;
     parameter  int unsigned  MIPS_IMMEDIATE_WIDTH   = 16;
+    parameter  int unsigned  MIPS_OP_WIDTH          = 6;
+    parameter  int unsigned  MIPS_FUNCT_WIDTH       = 6;
 
     ////////////////////////Typedefs//////////////////////////////////////////
     typedef logic[MIPS_REG_ADDR_WIDTH-1:0]    mips_reg_addr_t;
@@ -19,5 +21,13 @@ package MIPS_pkg;
     typedef logic[MIPS_PC_WIDTH-1:0]          mips_pc_t;
     typedef logic[MIPS_INSTRUCTION_WIDTH-1:0] mips_instruction_t;
     typedef logic[MIPS_IMMEDIATE_WIDTH-1:0]   mips_immediate_t;
+    
+    ////////////////////////ENUMS////////////////////////////////////////////
+    typedef enum logic[MIPS_OP_WIDTH-1:0] {
+        MIPS_RTYPE_OP = 6'b000000
+    } mips_op_e;
+    typedef enum logic[MIPS_FUNCT_WIDTH-1:0] {
+        MIPSS_ADD_FUNCT = 6'b000000
+    } mips_funct_e;
 
 endpackage: MIPS_pkg
