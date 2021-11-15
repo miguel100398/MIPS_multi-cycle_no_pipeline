@@ -7,6 +7,7 @@ module MIPS(
     input  logic rst_n
 );
 import MIPS_pkg::*;
+import ALU_pkg::*;
 
 //PC register signals
 logic en_pc;
@@ -20,6 +21,11 @@ mips_data_t     rf_RD1;
 mips_data_t     rf_RD2;
 mips_data_t     rf_WD3;
 logic           rf_WE3;
+//ALU signals
+mips_data_t     alu_src_A;
+mips_data_t     alu_src_B;
+ALU_ctrl_e      alu_ctrl;
+mips_data_t     alu_out;
 //Instruction register
 logic en_instr_reg;
 mips_instruction_t next_instruction;
@@ -69,6 +75,22 @@ register_file#(
     .RD2(rf_RD2),
     .WD3(rf_WD3),
     .WE3(rf_WE3)
+);
+
+//ALU
+ALU#(
+    .LENGTH(MIPS_DATA_WIDTH),
+    .REG_INPUTS(1'b0),
+    .REG_OUTPUTS(1'b0),
+    .CHECK_PARAM(1'b1)
+) ALU0(
+    .clk(clk),
+    .rst_n(rst_n),
+    .en(1'b1),
+    .A(alu_src_A),
+    .B(alu_src_B),
+    .ctrl(alu_ctrl),
+    .Result(alu_out)
 );
 
 //Instruction register

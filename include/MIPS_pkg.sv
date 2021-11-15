@@ -3,6 +3,7 @@
 //date: November 10, 2021
 
 package MIPS_pkg;
+    import ALU_pkg::*;
 
     //////////////////////////Parameters///////////////////////////////////////
     parameter  int unsigned  MIPS_NUM_REGISTERS     = 32;
