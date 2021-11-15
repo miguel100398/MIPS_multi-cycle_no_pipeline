@@ -48,6 +48,44 @@ mips_data_t      sign_extended_imm;
 //Zero extend
 mips_immediate_t zero_extend_imm;
 mips_data_t      zero_extendedn_imm;
+//Mux Address
+mips_pc_t pc_addr_mux_in;
+mips_pc_t alu_addr_mux_in;
+logic     addr_mux_sel;
+mips_pc_t addr_mux_in[2];   
+mips_pc_t addr_mux_out;  
+//RegDsst mux
+mips_reg_addr_t src0_regdst_mux_in;
+mips_reg_addr_t src1_regdst_mux_in;
+logic           regdst_mux_sel;
+mips_reg_addr_t regdst_mux_in[2];
+mips_reg_addr_t regdst_mux_out;
+//WriteData mux
+mips_data_t alu_writedata_mux_in;
+mips_data_t data_writedata_mux_in;
+logic       writedata_mux_sel;
+mips_data_t writedata_mux_in[2];
+mips_data_t writedata_mux_out;
+//Mux SRCA
+mips_data_t pc_srcA_mux_in;
+mips_data_t A_srcA_mux_in;
+logic       srcA_mux_sel;
+mips_data_t srcA_mux_in[2];
+mips_data_t srcA_mux_out;
+//Mux SRCB
+mips_data_t B_srcB_mux_in;
+mips_data_t incrPC_srcB_mux_in;
+mips_data_t signextend_srcB_mux_in;
+mips_data_t zeroextend_srcB_mux_in;
+logic[1:0]  srcB_mux_sel;
+mips_data_t srcB_mux_in[4];
+mips_data_t srcB_mux_out;
+//MUX ALU Result
+mips_data_t alu_alurslt_mux_in;
+mips_data_t alureg_alurslt_mux_in;
+logic       alurslt_mux_sel;
+mips_data_t alurslt_mux_in[2];
+mips_data_t alurslt_mux_out;
 
 
 //PC register
@@ -153,5 +191,61 @@ bit_extension#(
     .d_in(zero_extend_imm),
     .d_out(zero_extendedn_imm)
 );
+
+//Mux address
+mux#(
+    .NUM_INPUTS(2),
+    .WIDTH(MIPS_PC_WIDTH)
+)addr_mux(
+    .d_in(addr_mux_in),
+    .sel(addr_mux_sel),
+    .d_out(addr_mux_out)
+);
+//Mux RegDst
+mux#(
+    .NUM_INPUTS(2),
+    .WIDTH(MIPS_REG_ADDR_WIDTH)
+)regdst_mux(
+    .d_in(regdst_mux_in),
+    .sel(regdst_mux_sel),
+    .d_out(regdst_mux_out)
+);
+//Mux WriteData
+mux#(
+    .NUM_INPUTS(2),
+    .WIDTH(MIPS_DATA_WIDTH)
+)writedata_mux(
+    .d_in(writedata_mux_in),
+    .sel(writedata_mux_sel),
+    .d_out(writedata_mux_out)
+);
+//Mux SRCA
+mux#(
+    .NUM_INPUTS(2),
+    .WIDTH(MIPS_DATA_WIDTH)
+)srcA_mux(
+    .d_in(srcA_mux_in),
+    .sel(srcA_mux_sel),
+    .d_out(srcA_mux_out)
+);
+//Mux SRCB
+mux#(
+    .NUM_INPUTS(4),
+    .WIDTH(MIPS_DATA_WIDTH)
+)srcB_mux(
+    .d_in(srcB_mux_in),
+    .sel(srcB_mux_sel),
+    .d_out(srcB_mux_out)
+);
+//Mux ALU result
+mux#(
+    .NUM_INPUTS(2),
+    .WIDTH(MIPS_DATA_WIDTH)
+)alurslt_mux(
+    .d_in(alurslt_mux_in),
+    .sel(alurslt_mux_sel),
+    .d_out(alurslt_mux_out)
+);
+
 
 endmodule: MIPS
