@@ -2,7 +2,7 @@
 //author: Miguel Bucio miguel_angel_bucio@hotmail.com
 //date: November 14, 2021
 
-module mux#(
+module mux_param#(
     parameter int unsigned NUM_INPUTS = 2,
     parameter int unsigned WIDTH      = 32,
     //Local parameter
@@ -15,4 +15,4 @@ module mux#(
 
 assign d_out = d_in[sel];
 
-endmodule: mux
+endmodule: mux_param

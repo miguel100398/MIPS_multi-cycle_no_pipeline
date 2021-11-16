@@ -71,7 +71,7 @@ mips_immediate_t sign_extend_imm;
 mips_data_t      sign_extended_imm;
 //Zero extend
 mips_immediate_t zero_extend_imm;
-mips_data_t      zero_extendedn_imm;
+mips_data_t      zero_extended_imm;
 //Mux Address
 mips_pc_t pc_addr_mux_in;
 mips_pc_t alu_addr_mux_in;
@@ -233,11 +233,11 @@ bit_extension#(
     .DATA_OUT_WIDTH(MIPS_DATA_WIDTH)
 ) zero_extend(
     .d_in(zero_extend_imm),
-    .d_out(zero_extendedn_imm)
+    .d_out(zero_extended_imm)
 );
 
 //Mux address
-mux#(
+mux_param#(
     .NUM_INPUTS(2),
     .WIDTH(MIPS_PC_WIDTH)
 )addr_mux(
@@ -246,7 +246,7 @@ mux#(
     .d_out(addr_mux_out)
 );
 //Mux RegDst
-mux#(
+mux_param#(
     .NUM_INPUTS(2),
     .WIDTH(MIPS_REG_ADDR_WIDTH)
 )regdst_mux(
@@ -255,7 +255,7 @@ mux#(
     .d_out(regdst_mux_out)
 );
 //Mux WriteData
-mux#(
+mux_param#(
     .NUM_INPUTS(2),
     .WIDTH(MIPS_DATA_WIDTH)
 )writedata_mux(
@@ -264,7 +264,7 @@ mux#(
     .d_out(writedata_mux_out)
 );
 //Mux SRCA
-mux#(
+mux_param#(
     .NUM_INPUTS(2),
     .WIDTH(MIPS_DATA_WIDTH)
 )srcA_mux(
@@ -273,7 +273,7 @@ mux#(
     .d_out(srcA_mux_out)
 );
 //Mux SRCB
-mux#(
+mux_param#(
     .NUM_INPUTS(4),
     .WIDTH(MIPS_DATA_WIDTH)
 )srcB_mux(
@@ -282,7 +282,7 @@ mux#(
     .d_out(srcB_mux_out)
 );
 //Mux ALU result
-mux#(
+mux_param#(
     .NUM_INPUTS(2),
     .WIDTH(MIPS_DATA_WIDTH)
 )alurslt_mux(
@@ -297,6 +297,68 @@ mux#(
 assign R_instruction = instruction;
 assign I_instruction = instruction;
 assign J_instruction = instruction; 
-
+//PC
+assign next_pc = alurslt_mux_out;
+//register File
+assign rf_A1   = R_instruction.rs;
+assign rf_A2   = R_instruction.rt;
+assign rf_A3   = regdst_mux_out;
+assign rf_WD3  = writedata_mux_out;
+assign rf_WE3  = ctrl_RegWrite;
+//Control unit
+assign ctrl_op    = R_instruction.op;
+assign ctrl_funct = R_instruction.funct;
+//Memory
+assign addr_mem    = addr_mux_out;
+assign wr_data_mem = B;
+assign wr_en_mem   = ctrl_MemWrite;
+//ALU
+assign alu_src_A = srcA_mux_out;
+assign alu_src_B = srcB_mux_out;
+assign alu_ctrl  = ctrl_ALUControl;
+//Sign extend
+assign sign_extend_imm = I_instruction.imm;
+//Zero extend
+assign zero_extend_imm = I_instruction.imm;
+//Mux address
+assign pc_addr_mux_in  = pc;
+assign alu_addr_mux_in = ALU_result;
+assign addr_mux_sel    = ctrl_IorD;
+assign addr_mux_in[0]  = pc_addr_mux_in;
+assign addr_mux_in[1]  = alu_addr_mux_in; 
+//Mux RegDst
+assign src0_regdst_mux_in = I_instruction.rt;
+assign src1_regdst_mux_in = R_instruction.rd;
+assign regdst_mux_sel     = ctrl_RegDst;
+assign regdst_mux_in[0]   = src0_regdst_mux_in;
+assign regdst_mux_in[1]   = src1_regdst_mux_in;
+//Mux WriteData
+assign alu_writedata_mux_in  = ALU_result;
+assign data_writedata_mux_in = data;
+assign writedata_mux_sel     = ctrl_MemtoReg;
+assign writedata_mux_in[0]   = alu_writedata_mux_in;
+assign writedata_mux_in[1]   = data_writedata_mux_in;
+//Mux SRCA
+assign pc_srcA_mux_in  = pc;
+assign A_srcA_mux_in   = A;
+assign srcA_mux_sel    = ctrl_ALUSrcA;
+assign srcA_mux_in[0]  = pc_srcA_mux_in;
+assign srcA_mux_in[1]  = A_srcA_mux_in;
+///Mux SRCB
+assign B_srcB_mux_in          = B;
+assign incrPC_srcB_mux_in     = {{MIPS_DATA_WIDTH-1{1'b0}},1'b1};
+assign signextend_srcB_mux_in = sign_extended_imm;
+assign zeroextend_srcB_mux_in = zero_extended_imm;
+assign srcB_mux_sel           = ctrl_ALUSrcB;
+assign srcB_mux_in[0]         = B_srcB_mux_in;
+assign srcB_mux_in[1]         = incrPC_srcB_mux_in;
+assign srcB_mux_in[2]         = signextend_srcB_mux_in;
+assign srcB_mux_in[3]         = zeroextend_srcB_mux_in;
+//MUX ALU Result
+assign alu_alurslt_mux_in     = alu_out;
+assign alureg_alurslt_mux_in  = ALU_result;
+assign alurslt_mux_sel        = ctrl_PCSrc;
+assign alurslt_mux_in[0]      = alu_alurslt_mux_in;
+assign alurslt_mux_in[1]      = alureg_alurslt_mux_in;
 
 endmodule: MIPS
