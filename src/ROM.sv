@@ -3,7 +3,7 @@
 //date: november 15, 2021
 
 module ROM#(
-    parameter string       MEMORY_FILE   = "no_file",
+    //parameter string       MEMORY_FILE   = "no_file",     //Cant use paramter in readmem in quartus
     parameter int unsigned DATA_WIDTH    = 32,
     parameter int unsigned ADDR_WIDTH    = 32,
     parameter string       MEMORY_FORMAT = "hex" 
@@ -22,15 +22,15 @@ logic [DATA_WIDTH-1:0] rom_mem[NUM_MEM];
 generate
     if ((MEMORY_FORMAT == "hex") || (MEMORY_FORMAT == "HEX") || MEMORY_FORMAT == "h" || MEMORY_FORMAT == "H") begin : gen_hex_rom 
         initial begin
-            $readmemh(MEMORY_FILE, rom_mem);
+            $readmemh("no_file", rom_mem);
         end
     end else if ((MEMORY_FORMAT == "bin") || (MEMORY_FORMAT == "BIN") || MEMORY_FORMAT == "b" || MEMORY_FORMAT == "B") begin : gen_bin_rom 
         initial begin
-            $readmemb(MEMORY_FILE, rom_mem);
+            $readmemb("no_file", rom_mem);
         end
     end else if ((MEMORY_FORMAT == "dec") || (MEMORY_FORMAT == "DEC") || MEMORY_FORMAT == "d" || MEMORY_FORMAT == "D") begin : gen_dec_rom
         initial begin
-            $readmemd(MEMORY_FILE, rom_mem);
+            $readmemd("no_file", rom_mem);
         end
     end else begin : gen_error_rom
         initial begin
