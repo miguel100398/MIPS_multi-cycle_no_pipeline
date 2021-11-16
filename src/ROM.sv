@@ -22,15 +22,15 @@ logic [DATA_WIDTH-1:0] rom_mem[NUM_MEM];
 generate
     if ((MEMORY_FORMAT == "hex") || (MEMORY_FORMAT == "HEX") || MEMORY_FORMAT == "h" || MEMORY_FORMAT == "H") begin : gen_hex_rom 
         initial begin
-            $readmemh("no_file", rom_mem);
+            $readmemh("instruction_memory.txt", rom_mem);
         end
     end else if ((MEMORY_FORMAT == "bin") || (MEMORY_FORMAT == "BIN") || MEMORY_FORMAT == "b" || MEMORY_FORMAT == "B") begin : gen_bin_rom 
         initial begin
-            $readmemb("no_file", rom_mem);
+            $readmemb("instruction_memory.txt", rom_mem);
         end
     end else if ((MEMORY_FORMAT == "dec") || (MEMORY_FORMAT == "DEC") || MEMORY_FORMAT == "d" || MEMORY_FORMAT == "D") begin : gen_dec_rom
         initial begin
-            $readmemd("no_file", rom_mem);
+            $readmemd("instruction_memory.txt", rom_mem);
         end
     end else begin : gen_error_rom
         initial begin
