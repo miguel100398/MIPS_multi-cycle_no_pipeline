@@ -189,11 +189,11 @@ always_comb begin
             MemtoReg    = 1'b0;
             PCWrite     = 1'b0;
             PCSrc       = 1'b0;
-            ALUControl  = ADD;
             ALUSrcA     = 1'b0;
             ALUSrcB     = 2'b00;
             RegWrite    = 1'b0;
             Branch      = 1'b0;
+				ALUOp       = 2'b00;
         end
     endcase
 end

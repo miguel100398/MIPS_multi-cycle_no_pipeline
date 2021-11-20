@@ -158,34 +158,34 @@ assign shr_result               = A_int >> B_int[3:0];
 //Multiplex Result
 always_comb begin
     case(ctrl_int)
-        ADD: begin
+        ALU_ADD: begin
             Result_int = add_result;
         end
-        SUB: begin
+        ALU_SUB: begin
             Result_int = sub_result;
         end
-        NEG_B: begin
+        ALU_NEG_B: begin
             Result_int = negb_result;
         end
-        MUL: begin
+        ALU_MUL: begin
             Result_int = mul_result[LENGTH-1:0];
         end
-        AND: begin
+        ALU_AND: begin
             Result_int = and_result;
         end
-        OR: begin
+        ALU_OR: begin
             Result_int = or_result;
         end
-        A_N: begin
+        ALU_A_N: begin
             Result_int = a_n_result;
         end
-        XOR: begin
+        ALU_XOR: begin
             Result_int = xor_result;
         end
-        SHL: begin
+        ALU_SHL: begin
             Result_int = shl_result;
         end
-        SHR: begin
+        ALU_SHR: begin
             Result_int = shr_result;
         end
         default: begin
@@ -195,11 +195,11 @@ always_comb begin
 end
 
 //Flags
-assign carry_int         = (ctrl_int==SUB) ? carry_sub : carry_add;
+assign carry_int         = (ctrl_int==ALU_SUB) ? carry_sub : carry_add;
 assign zero_int          = (Result_int == 0);
-assign overflow_negative = (B_int == {1'b1,{LENGTH-1{1'b0}}}) & (ctrl_int == NEG_B);       //Overflow only when B = -16
-assign overflow_mul      = ((signed'(mul_result) >= 2**(LENGTH-1)) || (signed'(mul_result) < 2**LENGTH)) & (ctrl_int == MUL);
-assign overflow_arith    = (carry_int ^ Result_int[LENGTH-1]) & ((ctrl_int == ADD) | (ctrl_int == SUB));
+assign overflow_negative = (B_int == {1'b1,{LENGTH-1{1'b0}}}) & (ctrl_int == ALU_NEG_B);       //Overflow only when B = -16
+assign overflow_mul      = ((signed'(mul_result) >= 2**(LENGTH-1)) || (signed'(mul_result) < 2**LENGTH)) & (ctrl_int == ALU_MUL);
+assign overflow_arith    = (carry_int ^ Result_int[LENGTH-1]) & ((ctrl_int == ALU_ADD) | (ctrl_int == ALU_SUB));
 assign overflow_en       = (ctrl_int <= 3);
 assign overflow_int      = (overflow_arith | overflow_mul | overflow_negative) & overflow_en;
 
