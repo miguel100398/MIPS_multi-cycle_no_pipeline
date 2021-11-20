@@ -36,11 +36,57 @@ package MIPS_pkg;
     
     ////////////////////////ENUMS////////////////////////////////////////////
     typedef enum logic[MIPS_OP_WIDTH-1:0] {
-        MIPS_RTYPE_OP = 6'b000000
+        MIPS_RTYPE_OP = 6'h0,
+        MIPS_J_OP     = 6'h2,
+        MIPS_JAL_OP   = 6'h3,
+        MIPS_BEQ_OP   = 6'h4,
+        MIPS_BNE_OP   = 6'h5,
+        MIPS_ADDI_OP  = 6'h8,
+        MIPS_ADDIU_OP = 6'h9,
+        MIPS_SLTI_OP  = 6'hA,
+        MIPS_SLTIU_OP = 6'hB,
+        MIPS_ANDI_OP  = 6'hC,
+        MIPS_ORI_OP   = 6'hD,
+        MIPS_LUI_OP   = 6'hF,
+        MIPS_LW_OP    = 6'h23,
+        MIPS_LBU_OP   = 6'h24,
+        MIPS_LHU_OP   = 6'h25,
+        MIPS_SB_OP    = 6'h28,
+        MIPS_SH_OP    = 6'h29,
+        MIPS_SW_OP    = 6'h2B,
+        MIPS_LL_OP    = 6'h30,
+        MIPS_SC_OP    = 6'h38
     } mips_op_e;
+
     typedef enum logic[MIPS_FUNCT_WIDTH-1:0] {
-        MIPSS_ADD_FUNCT = 6'b000000
+        MIPS_SLL_FUNCT  = 6'h0,
+        MIPS_SRL_FUNCT  = 6'h2,
+        MIPS_JR_FUNCT   = 6'h8,
+        MIPS_ADD_FUNCT  = 6'h20,
+        MIPS_ADDU_FUNCT = 6'h21,
+        MIPS_SUB_FUNCT  = 6'h22,
+        MIPS_SUBU_FUNCT = 6'h23,
+        MIPS_AND_FUNCT  = 6'h24,
+        MIPS_OR_FUNCT   = 6'h25,
+        MIPS_NOR_FUNCT  = 6'h27,
+        MIPS_SLT_FUNCT  = 6'h2A,
+        MIPS_SLTU_FUNCT = 6'h2B
     } mips_funct_e;
+    
+    typedef enum logic[3:0] {
+        MIPS_FETCH_S         = 4'd0,
+        MIPS_DECODE_S        = 4'd1,
+        MIPS_MEMADDR_S       = 4'd2,
+        MIPS_MEMREAD_S       = 4'd3,
+        MIPS_MEMWRITEBACK_S  = 4'd4,
+        MIPS_MEMWRITE_S      = 4'd5,
+        MIPS_EXECUTE_S       = 4'd6,
+        MIPS_ALUWRITEBACK_S  = 4'd7,
+        MIPS_BRANCH_S        = 4'd8,
+        MIPS_ADDIEXECUTE_S   = 4'd9,
+        MIPS_ADDIWRITEBACK_S = 4'd10,
+        MIPS_JUMP_S          = 4'd11
+    } mips_state_e;
 
     /////////////////////////////Structs////////////////////////////////////////
     typedef struct packed {
