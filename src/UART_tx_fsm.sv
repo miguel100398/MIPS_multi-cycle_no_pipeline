@@ -26,6 +26,8 @@ logic bits_sent_en;        //Increment counter of bits sent
 logic bits_sent_rst_n;    //Reset counter of bits sent  
 logic use_parity_bit;     //Parity bit will be send
 
+logic start_send_data;
+
 //FSM sequential circuit
 always_ff @(posedge clk or negedge rst_n) begin
     if (~rst_n) begin
@@ -35,11 +37,13 @@ always_ff @(posedge clk or negedge rst_n) begin
     end    
 end
 
+assign start_send_data = (csr.uart_control_0_csr.send_data && ~csr.uart_status_0_csr.fifo_send_data_empty);
+
 //FSM next state logic
 always_comb begin
     case(state)
         IDLE_S: begin
-            next_state = (csr.uart_control_0_csr.send_data) ? WAIT_BIT_S : IDLE_S;
+            next_state = (start_send_data) ? WAIT_BIT_S : IDLE_S;
         end
         WAIT_BIT_S: begin
             if (wait_bit_done) begin
@@ -72,8 +76,8 @@ always_comb begin
             shift_bits        = 1'b0;
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
-            start_bits        = csr.uart_control_0_csr.send_data;
-            data_sent         = 1'b0;
+            start_bits        = start_send_data;
+            data_sent         = start_send_data;
         end
         WAIT_BIT_S: begin
             bits_sent_rst_n   = 1'b1;
@@ -84,7 +88,7 @@ always_comb begin
             wait_bit_en       = 1'b1;
             wait_bit_rst_n    = 1'b1;
             start_bits        = 1'b0;
-            data_sent         = all_bits_sent;
+            data_sent         = 1'b0;
         end
         SHIFT_BIT_S: begin
             bits_sent_rst_n   = 1'b1;

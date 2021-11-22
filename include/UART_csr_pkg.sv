@@ -19,7 +19,7 @@ typedef enum logic {UART_FREE = 1'b0,        UART_BUSY = 1'b1}       uart_busy_e
 //Dont care bits
 parameter int unsigned UART_BAUD_RATE_CSR_DONT_CARE_BITS = 0;
 parameter int unsigned UART_CONTROL_0_CSR_DONT_CARE_BITS = UART_CSR_DATA_WIDTH - 7;
-parameter int unsigned UART_STATUS_0_CSR_DONT_CARE_BITS  = UART_CSR_DATA_WIDTH - 4;
+parameter int unsigned UART_STATUS_0_CSR_DONT_CARE_BITS  = UART_CSR_DATA_WIDTH - 8;
 //Registers
 typedef struct packed {
     uart_csr_data_t baud_rate;
@@ -33,6 +33,10 @@ typedef struct packed {
 } uart_control_0_csr_t;
 typedef struct packed {
     logic[UART_STATUS_0_CSR_DONT_CARE_BITS-1:0] dont_care;
+    logic                                       fifo_receive_data_full;
+    logic                                       fifo_receive_data_empty;
+    logic                                       fifo_send_data_full;
+    logic                                       fifo_send_data_empty;
     logic                                       data_valid;
     uart_error_e                                data_bits_error;
     uart_error_e                                parity_error;
@@ -58,7 +62,7 @@ parameter uart_csr_data_t UART_BAUD_RATE_CSR_RST = 'd5208;      //9600 Baud rate
 parameter uart_csr_data_t UART_CONTROL_0_CSR_RST = {{UART_CONTROL_0_CSR_DONT_CARE_BITS{1'b0}}, 1'b0, 4'd8, UART_ODD_PARITY, UART_PARITY}; 
 //Dont carebits/data_bits_error/parity_error/busy
 //XXXXXXXXXXXXX/  NO_ERROR     / NO_ERROR  / FREE
-parameter uart_csr_data_t UART_STATUS_0_CSR_RST = {{UART_STATUS_0_CSR_DONT_CARE_BITS{1'b0}}, UART_NO_ERROR, UART_NO_ERROR, UART_FREE};
+parameter uart_csr_data_t UART_STATUS_0_CSR_RST = {{UART_STATUS_0_CSR_DONT_CARE_BITS{1'b0}}, 1'b0, 1'b1, UART_NO_ERROR, UART_NO_ERROR, UART_FREE};
 parameter uart_csr_data_t UART_SEND_DATA_CSR_RST = 'd0;
 parameter uart_csr_data_t UART_READ_DATA_CSR_RST = 'd0;
 

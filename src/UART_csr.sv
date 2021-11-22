@@ -42,6 +42,14 @@ logic read_uart_status_0_csr;
 logic read_uart_read_data_csr;
 //Error in data bits
 logic data_bit_error;
+//FIFO uart data send
+uart_csr_data_t rd_data_fifo_uart_data_send;
+logic full_fifo_uart_data_send;
+logic empty_fifo_uart_data_send;
+//FIFO UART data receive
+uart_csr_data_t rd_data_fifo_uart_data_receive;
+logic full_fifo_uart_data_receive;
+logic empty_fifo_uart_data_receive;
 
 //Assign registers to interfaces
 assign csr.uart_baud_rate_csr = uart_baud_rate_csr;
@@ -72,27 +80,43 @@ always_ff @(posedge clk or negedge rst_n) begin
         uart_control_0_csr <= UART_CONTROL_0_CSR_RST;
     end else if (write_uart_control_0_csr) begin
         uart_control_0_csr <= wr_data;
-    end else if (data_sent) begin
-        uart_control_0_csr.send_data <= 1'b0;
-    end
+    end 
 end
 
-always_ff @(posedge clk or negedge rst_n) begin
-    if (~rst_n) begin
-        uart_send_data_csr <= UART_SEND_DATA_CSR_RST;
-    end else if (write_uart_send_data_csr) begin
-        uart_send_data_csr <= wr_data;
-    end
-end
+//UART send data fifo
+FIFO #(
+    .DEPTH(UART_SEND_DATA_FIFO_WIDTH),
+    .DATA_WIDTH(UART_CSR_DATA_WIDTH)
+) fifo_uart_send_data (
+    .clk(clk),
+    .rst_n(rst_n),
+    .wr(write_uart_send_data_csr),
+    .rd(data_sent),
+    .wr_data(wr_data),
+    .rd_data(rd_data_fifo_uart_data_send),
+    .full(full_fifo_uart_data_send),
+    .empty(empty_fifo_uart_data_send)
+);
 
-always_ff @(posedge clk or negedge rst_n) begin
-    if (~rst_n) begin
-        uart_read_data_csr <= UART_READ_DATA_CSR_RST;
-    end else if (data_valid) begin
-        uart_read_data_csr <= rx_uart_data;
-    end
-end
+assign uart_send_data_csr = rd_data_fifo_uart_data_send;
 
+
+//UART receive data fifo
+FIFO #(
+    .DEPTH(UART_RECEIVE_DATA_FIFO_WIDTH),
+    .DATA_WIDTH(UART_CSR_DATA_WIDTH)
+) fifo_uart_recieve_data(
+    .clk(clk),
+    .rst_n(rst_n),
+    .wr(data_valid),
+    .rd(read_uart_read_data_csr),
+    .wr_data(rx_uart_data),
+    .rd_data(rd_data_fifo_uart_data_receive),
+    .full(full_fifo_uart_data_receive),
+    .empty(empty_fifo_uart_data_receive)
+);
+
+assign uart_read_data_csr = rd_data_fifo_uart_data_receive;
 
 //Error in data bits
 assign data_bit_error = (uart_control_0_csr.data_bits < 5) || (uart_control_0_csr.data_bits > 8);
@@ -102,23 +126,26 @@ assign data_bit_error = (uart_control_0_csr.data_bits < 5) || (uart_control_0_cs
 always_ff @(posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         uart_status_0_csr <= UART_STATUS_0_CSR_RST;
-    end else if (read_uart_status_0_csr) begin      //clean bits with read
-        uart_status_0_csr.data_bits_error <= UART_NO_ERROR;
-        uart_status_0_csr.parity_error    <= UART_NO_ERROR;
     end else begin
-        //Write flags
-        if (data_bit_error) begin
-            uart_status_0_csr.data_bits_error <= UART_ERROR;
+        uart_status_0_csr.fifo_send_data_empty    <= empty_fifo_uart_data_send;
+        uart_status_0_csr.fifo_send_data_full     <= full_fifo_uart_data_send;
+        uart_status_0_csr.fifo_receive_data_empty <= empty_fifo_uart_data_receive;
+        uart_status_0_csr.fifo_receive_data_full  <= full_fifo_uart_data_receive;
+        uart_status_0_csr.busy                    <= busy;
+        uart_status_0_csr.data_valid              <= ~empty_fifo_uart_data_receive;
+        if (read_uart_status_0_csr) begin      //clean bits with read
+            uart_status_0_csr.data_bits_error <= UART_NO_ERROR;
+            uart_status_0_csr.parity_error    <= UART_NO_ERROR;
+        end else begin
+            //Write flags
+            if (data_bit_error) begin
+                uart_status_0_csr.data_bits_error <= UART_ERROR;
+            end
+            if (parity_error) begin
+                uart_status_0_csr.parity_error    <= UART_ERROR;
+            end
+            
         end
-        if (parity_error) begin
-            uart_status_0_csr.parity_error    <= UART_ERROR;
-        end
-        if (read_uart_read_data_csr) begin
-            uart_status_0_csr.data_valid      <= 1'b0;
-        end else if (data_valid) begin
-            uart_status_0_csr.data_valid      <= 1'b1;
-        end
-        uart_status_0_csr.busy                <= busy;
     end
 end
 
