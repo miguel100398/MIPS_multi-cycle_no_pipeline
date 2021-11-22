@@ -362,5 +362,14 @@ assign alureg_alurslt_mux_in  = ALU_result;
 assign alurslt_mux_sel        = ctrl_PCSrc;
 assign alurslt_mux_in[0]      = alu_alurslt_mux_in;
 assign alurslt_mux_in[1]      = alureg_alurslt_mux_in;
+//Registers
+assign en_pc                  = ctrl_PCWrite;
+assign en_instr_reg           = ctrl_IRWrite;
+assign next_instruction       = rd_data_mem;
+assign next_data              = rd_data_mem;
+assign next_A                 = rf_RD1;
+assign next_B                 = rf_RD2;
+assign next_ALU_result        = alu_out;
+
 
 endmodule: MIPS

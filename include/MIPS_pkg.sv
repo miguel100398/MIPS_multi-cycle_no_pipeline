@@ -9,6 +9,7 @@ package MIPS_pkg;
     parameter  int unsigned  MIPS_NUM_REGISTERS     = 32;
     parameter  int unsigned  MIPS_DATA_WIDTH        = 32;
     parameter  int unsigned  MIPS_ADDR_WIDTH        = 32;
+    parameter  int unsigned  MIPS_MEMORY_ADDR_WIDTH = 8;
     localparam int unsigned  MIPS_REG_ADDR_WIDTH    = $clog2(MIPS_NUM_REGISTERS);
     parameter  int unsigned  MIPS_PC_WIDTH          = 32;
     parameter  int unsigned  MIPS_INSTRUCTION_WIDTH = 32;

@@ -37,10 +37,10 @@ logic           uart_csr_ren;
 //MIPS signals 
 assign mips_rd_data        = (chip_sel_memory) ? mem_rd_data : uart_csr_rd_data;
 //Memory signals
-assign chip_sel_memory     = ~mips_addr[MIPS_ADDR_WIDTH-1];
+assign chip_sel_memory     = ~mips_addr[MIPS_MEMORY_ADDR_WIDTH];
 assign mem_addr            = mips_addr[MIPS_ADDR_WIDTH-2:0];
 //UART signals
-assign chip_sel_uart       = mips_addr[MIPS_ADDR_WIDTH-1];
+assign chip_sel_uart       = mips_addr[MIPS_MEMORY_ADDR_WIDTH];
 assign uart_csr_wr_addr    = mips_addr[2:0];
 assign uart_csr_rd_addr    = mips_addr[2:0];
 assign uart_csr_wr_data    = mips_wr_data;
@@ -77,7 +77,7 @@ MIPS mips0(
 
 instruction_data_memory #(
     .DATA_WIDTH(MIPS_DATA_WIDTH),
-    .ADDR_WIDTH(8),		//Quartus doesn't supports unsigned 32'FFFF_FFFF
+    .ADDR_WIDTH(MIPS_MEMORY_ADDR_WIDTH),		//Quartus doesn't supports unsigned 32'FFFF_FFFF
     .MEMORY_FORMAT("hex")
 )memory(
     .clk(clk),
