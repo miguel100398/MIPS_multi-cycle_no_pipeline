@@ -4,10 +4,9 @@ import UART_pkg::*,
 (
     input  logic        clk,
     input  logic        rst_n,
-    input  uart_data_t  tx_data,
-    input  logic        send,
     output logic        tx_data_ready,
     output logic        tx,
+    output logic        data_sent,
     //CSR
     UART_csr_if.uart_mp csr,
     //Status flags
@@ -24,7 +23,6 @@ logic wait_bit_rst_n;
 UART_tx_fsm fsm(
     .clk(clk),
     .rst_n(rst_n),
-    .send(send),
     .wait_bit_done(wait_bit_done),
     .tx_data_ready(tx_data_ready),
     .busy(busy),
@@ -32,7 +30,8 @@ UART_tx_fsm fsm(
     .shift_bits(shift_bits),
     .wait_bit_en(wait_bit_en),
     .wait_bit_rst_n(wait_bit_rst_n),
-    .csr(csr)
+    .csr(csr),
+    .data_sent(data_sent)
 );
 
 //Data path
@@ -43,7 +42,6 @@ UART_tx_datapath datapath(
     .shift_bits(shift_bits),
     .wait_bit_en(wait_bit_en),
     .wait_bit_rst_n(wait_bit_rst_n),
-    .tx_data(tx_data),
     .wait_bit_done(wait_bit_done),
     .tx(tx),
     .csr(csr)

@@ -4,7 +4,6 @@ import UART_tx_pkg::*,
 (
     input  logic        clk,
     input  logic        rst_n,
-    input  logic        send,
     input  logic        wait_bit_done,
     output logic        tx_data_ready,
     output uart_busy_e  busy,
@@ -12,6 +11,7 @@ import UART_tx_pkg::*,
     output logic        shift_bits,
     output logic        wait_bit_en,
     output logic        wait_bit_rst_n,
+    output logic        data_sent,
     //CSR
     UART_csr_if.uart_mp csr
 );
@@ -39,7 +39,7 @@ end
 always_comb begin
     case(state)
         IDLE_S: begin
-            next_state = (send) ? WAIT_BIT_S : IDLE_S;
+            next_state = (csr.uart_control_0_csr.send_data) ? WAIT_BIT_S : IDLE_S;
         end
         WAIT_BIT_S: begin
             if (wait_bit_done) begin
@@ -72,7 +72,8 @@ always_comb begin
             shift_bits        = 1'b0;
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
-            start_bits        = send;
+            start_bits        = csr.uart_control_0_csr.send_data;
+            data_sent         = 1'b0;
         end
         WAIT_BIT_S: begin
             bits_sent_rst_n   = 1'b1;
@@ -83,6 +84,7 @@ always_comb begin
             wait_bit_en       = 1'b1;
             wait_bit_rst_n    = 1'b1;
             start_bits        = 1'b0;
+            data_sent         = all_bits_sent;
         end
         SHIFT_BIT_S: begin
             bits_sent_rst_n   = 1'b1;
@@ -93,6 +95,7 @@ always_comb begin
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
             start_bits        = 1'b0;
+            data_sent         = 1'b0;
         end
         default: begin
             bits_sent_rst_n   = 1'b0;
@@ -103,6 +106,7 @@ always_comb begin
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
             start_bits        = 1'b0;
+            data_sent         = 1'b0;
         end
     endcase
 end

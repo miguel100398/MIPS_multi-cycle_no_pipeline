@@ -9,11 +9,9 @@ import UART_csr_pkg::*,
     input  logic        wait_bit_en,
     input  logic        wait_bit_rst_n,
     input  logic        done,
-    input  logic        rx_data_ready,
     output logic        wait_bit_done,
     output uart_data_t  rx_data,
     output logic        parity_error,
-    output logic        rx_data_valid,
     //CSR
     UART_csr_if.uart_mp csr
 );
@@ -108,14 +106,5 @@ always_comb begin
 	 end
 end
 
-always_ff @(posedge clk or negedge rst_n) begin
-    if (~rst_n) begin
-        rx_data_valid <= 1'b0;
-    end else if (done) begin
-        rx_data_valid <= 1'b1;
-    end else if (rx_data_ready) begin
-        rx_data_valid <= 1'b0;
-    end
-end
 
 endmodule: UART_rx_datapath

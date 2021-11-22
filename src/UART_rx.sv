@@ -5,7 +5,6 @@ import UART_pkg::*,
     
     input  logic        clk,
     input  logic        rst_n,
-    input  logic        rx_data_ready,
     output uart_data_t  rx_data,
     output logic        rx_data_valid,
     input  logic        rx,
@@ -33,7 +32,8 @@ UART_rx_fsm fsm(
     .wait_bit_en(wait_bit_en),
     .wait_bit_rst_n(wait_bit_rst_n),
     .done(done),
-    .csr(csr)
+    .csr(csr),
+    .rx_data_valid(rx_data_valid)
 );
 
 //Datapath
@@ -45,11 +45,9 @@ UART_rx_datapath datapath(
     .wait_bit_en(wait_bit_en),
     .wait_bit_rst_n(wait_bit_rst_n),
     .done(done),
-    .rx_data_ready(rx_data_ready),
     .wait_bit_done(wait_bit_done),
     .rx_data(rx_data),
     .parity_error(parity_error),
-    .rx_data_valid(rx_data_valid),
     .csr(csr)
 );
 

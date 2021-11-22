@@ -6,7 +6,7 @@
 package UART_csr_pkg;
 
 //Registers parameters and typedefs
-parameter  int unsigned NUM_UART_CSR        = 3;
+parameter  int unsigned NUM_UART_CSR        = 5;
 parameter  int unsigned UART_CSR_DATA_WIDTH = 32;
 localparam int unsigned UART_CSR_ADDR_WIDTH = $clog2(NUM_UART_CSR);
 typedef logic [UART_CSR_ADDR_WIDTH-1:0] uart_csr_addr_t;
@@ -18,29 +18,39 @@ typedef enum logic {UART_NO_ERROR = 1'b0,    UART_ERROR = 1'b1}      uart_error_
 typedef enum logic {UART_FREE = 1'b0,        UART_BUSY = 1'b1}       uart_busy_e;
 //Dont care bits
 parameter int unsigned UART_BAUD_RATE_CSR_DONT_CARE_BITS = 0;
-parameter int unsigned UART_CONTROL_0_CSR_DONT_CARE_BITS = UART_CSR_DATA_WIDTH - 6;
-parameter int unsigned UART_STATUS_0_CSR_DONT_CARE_BITS  = UART_CSR_DATA_WIDTH - 3;
+parameter int unsigned UART_CONTROL_0_CSR_DONT_CARE_BITS = UART_CSR_DATA_WIDTH - 7;
+parameter int unsigned UART_STATUS_0_CSR_DONT_CARE_BITS  = UART_CSR_DATA_WIDTH - 4;
 //Registers
 typedef struct packed {
     uart_csr_data_t baud_rate;
 } uart_baud_rate_csr_t;
 typedef struct packed {
     logic [UART_CONTROL_0_CSR_DONT_CARE_BITS-1:0] dont_care;
+    logic                                         send_data;
     logic [3:0]                                   data_bits;
     uart_parity_e                                 odd_parity;
     uart_set_parity_e                             parity_bit;
 } uart_control_0_csr_t;
 typedef struct packed {
     logic[UART_STATUS_0_CSR_DONT_CARE_BITS-1:0] dont_care;
+    logic                                       data_valid;
     uart_error_e                                data_bits_error;
     uart_error_e                                parity_error;
     uart_busy_e                                 busy;
 } uart_status_0_csr_t;
+typedef struct packed {
+    uart_csr_data_t data;
+} uart_send_data_csr_t;
+typedef struct packed {
+    uart_csr_data_t data;
+} uart_read_data_csr_t;
 
 //Addresses
 parameter uart_csr_addr_t UART_BAUD_RATE_CSR_ADDR = 'h0;
 parameter uart_csr_addr_t UART_CONTROL_0_CSR_ADDR = 'h1;
 parameter uart_csr_addr_t UART_STATUS_0_CSR_ADDR  = 'h2;
+parameter uart_csr_addr_t UART_SEND_DATA_CSR_ADDR = 'h3;
+parameter uart_csr_addr_t UART_READ_DATA_CSR_ADDR = 'h4;
 //Reset values
 parameter uart_csr_data_t UART_BAUD_RATE_CSR_RST = 'd5208;      //9600 Baud rate
 //Dont care bits/Data bits/od_parity/parity_bit
@@ -49,6 +59,8 @@ parameter uart_csr_data_t UART_CONTROL_0_CSR_RST = {{UART_CONTROL_0_CSR_DONT_CAR
 //Dont carebits/data_bits_error/parity_error/busy
 //XXXXXXXXXXXXX/  NO_ERROR     / NO_ERROR  / FREE
 parameter uart_csr_data_t UART_STATUS_0_CSR_RST = {{UART_STATUS_0_CSR_DONT_CARE_BITS{1'b0}}, UART_NO_ERROR, UART_NO_ERROR, UART_FREE};
+parameter uart_csr_data_t UART_SEND_DATA_CSR_RST = 'd0;
+parameter uart_csr_data_t UART_READ_DATA_CSR_RST = 'd0;
 
 
 endpackage: UART_csr_pkg

@@ -10,6 +10,7 @@ import UART_rx_pkg::*,
     output logic wait_bit_en,
     output logic wait_bit_rst_n,
     output logic done,
+    output logic rx_data_valid,
     //CSR
     UART_csr_if.uart_mp csr
 );
@@ -74,6 +75,7 @@ always_comb begin
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
             done              = 1'b0;
+            rx_data_valid     = 1'b0;
         end
         WAIT_BIT_S: begin
             bits_sent_rst_n   = 1'b1;
@@ -82,6 +84,7 @@ always_comb begin
             wait_bit_en       = 1'b1;
             wait_bit_rst_n    = 1'b1;
             done              = 1'b0;
+            rx_data_valid     = 1'b0;
         end
         SHIFT_BIT_S: begin
             bits_sent_rst_n   = 1'b1;
@@ -90,6 +93,7 @@ always_comb begin
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
             done              = 1'b0;
+            rx_data_valid     = 1'b0;
         end
         DONE_S: begin
             bits_sent_rst_n   = 1'b0;
@@ -98,6 +102,7 @@ always_comb begin
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
             done              = 1'b1;
+            rx_data_valid     = 1'b1;
         end
         default: begin
             bits_sent_rst_n   = 1'b0;
@@ -106,6 +111,7 @@ always_comb begin
             wait_bit_en       = 1'b0;
             wait_bit_rst_n    = 1'b0;
             done              = 1'b0;
+            rx_data_valid     = 1'b0;
         end
     endcase
 end

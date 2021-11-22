@@ -4,7 +4,9 @@
 
 module uart_mips(
     input  logic clk,
-	 input  logic rst_n
+	input  logic rst_n,
+    output logic UART_tx,
+    output logic UART_rx
 );
 
 import MIPS_pkg::*;
@@ -52,7 +54,9 @@ UART uart0(
     .csr_wen(uart_csr_wen),
     .csr_rd_addr(uart_csr_rd_addr),
     .csr_ren(uart_csr_ren),
-    .csr_rd_data(uart_csr_rd_data)
+    .csr_rd_data(uart_csr_rd_data),
+    .tx(UART_tx),
+    .rx(UART_rx)
 );
 
 //MIPS
