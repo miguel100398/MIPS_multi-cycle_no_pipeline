@@ -13,7 +13,7 @@ module RAM#(
     output logic[DATA_WIDTH-1:0] rd_data
 );
 
-localparam int unsigned NUM_MEM = 2**ADDR_WIDTH;
+localparam int unsigned NUM_MEM = 2**(ADDR_WIDTH);
 
 //Memory
 logic[DATA_WIDTH-1:0] ram_mem[NUM_MEM];

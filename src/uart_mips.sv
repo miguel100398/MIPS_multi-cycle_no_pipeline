@@ -77,7 +77,7 @@ MIPS mips0(
 
 instruction_data_memory #(
     .DATA_WIDTH(MIPS_DATA_WIDTH),
-    .ADDR_WIDTH(MIPS_ADDR_WIDTH),
+    .ADDR_WIDTH(8),		//Quartus doesn't supports unsigned 32'FFFF_FFFF
     .MEMORY_FORMAT("hex")
 )memory(
     .clk(clk),

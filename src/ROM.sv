@@ -13,7 +13,7 @@ module ROM#(
     output logic[DATA_WIDTH-1:0] data_o
 );
 
-localparam int unsigned NUM_MEM = 2**ADDR_WIDTH;
+localparam int unsigned NUM_MEM = 2**(ADDR_WIDTH);
 
 //Memory
 logic [DATA_WIDTH-1:0] rom_mem[NUM_MEM];
