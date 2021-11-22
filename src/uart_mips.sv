@@ -6,7 +6,7 @@ module uart_mips(
     input  logic clk,
 	 input  logic rst_n,
     output logic UART_tx,
-    output logic UART_rx
+    input  logic UART_rx
 );
 
 import MIPS_pkg::*;

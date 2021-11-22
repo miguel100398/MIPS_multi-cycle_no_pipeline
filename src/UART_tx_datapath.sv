@@ -21,7 +21,7 @@ logic odd_parity;
 logic even_parity;
 uart_data_t tx_data;
 
-assign tx_data = csr.uart_send_data_csr.data;
+assign tx_data = csr.uart_send_data_csr.data[7:0];
 
 //Shift register
 
