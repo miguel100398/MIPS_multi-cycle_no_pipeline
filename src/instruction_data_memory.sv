@@ -15,6 +15,7 @@ module instruction_data_memory#(
     output logic [DATA_WIDTH-1:0] rd_data
 );
 
+
 logic[ADDR_WIDTH-2:0] addr_mem;
 logic[DATA_WIDTH-1:0] instr_mem_rd_data;
 logic[DATA_WIDTH-1:0] data_mem_rd_data;
@@ -24,10 +25,11 @@ logic access_data_mem;
 assign addr_mem         = addr[ADDR_WIDTH-2:0];
 assign access_data_mem  = addr[ADDR_WIDTH-1];
 
+
 //Instruction Memory
 ROM #(
     .DATA_WIDTH(DATA_WIDTH),
-    .ADDR_WIDTH(ADDR_WIDTH-1),
+    .ADDR_WIDTH(ADDR_WIDTH),
     .MEMORY_FORMAT(MEMORY_FORMAT)
 )instruction_memory(
     .clk(clk),
@@ -51,5 +53,6 @@ RAM #(
 
 //Assign output
 assign rd_data = (access_data_mem) ? data_mem_rd_data : instr_mem_rd_data;
+
 
 endmodule: instruction_data_memory

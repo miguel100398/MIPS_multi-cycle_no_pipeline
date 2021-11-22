@@ -2,14 +2,14 @@
 //author: Miguel Bucio miguel_angel_bucio@hotmail.com
 //date: November 20, 2021
 
-module ALU_decoder(
+module ALU_decoder
+import MIPS_pkg::*,
+       ALU_pkg::*;
+(
     input  logic[1:0]   ALUOp,
     input  mips_funct_e funct,
     output ALU_ctrl_e   ALUControl
 );  
-
-import MIPS_pkg::*;
-import ALU_pkg::*;
 
 always_comb begin 
     case(ALUOp)

@@ -2,7 +2,10 @@
 //author: Miguel Bucio miguel_angel_bucio@hotmail.com
 //date: November 10, 2021
 
-module MIPS(
+module MIPS
+import MIPS_pkg::*,
+       ALU_pkg::*;
+(
     input  logic clk,
     input  logic rst_n,
     //Memory signals
@@ -11,8 +14,7 @@ module MIPS(
     output mips_data_t wr_data_mem,
     output logic       wr_en_mem
 );
-import MIPS_pkg::*;
-import ALU_pkg::*;
+
 
 ////////////////////////////////////////////////Signals//////////////////////////////////////////////
 //Instruction

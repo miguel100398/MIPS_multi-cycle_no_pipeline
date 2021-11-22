@@ -4,7 +4,7 @@
 
 module uart_mips(
     input  logic clk,
-	input  logic rst_n,
+	 input  logic rst_n,
     output logic UART_tx,
     output logic UART_rx
 );
@@ -12,6 +12,8 @@ module uart_mips(
 import MIPS_pkg::*;
 import UART_pkg::*;
 import UART_csr_pkg::*;
+
+
 
 //MIPS signals
 mips_addr_t mips_addr;
@@ -45,6 +47,7 @@ assign uart_csr_wr_data    = mips_wr_data;
 assign uart_csr_wen        = chip_sel_uart && mips_wr_en;
 assign uart_csr_ren        = chip_sel_uart && ~mips_wr_en;
 
+
 //UART
 UART uart0(
 	.clk(clk),
@@ -59,6 +62,8 @@ UART uart0(
     .rx(UART_rx)
 );
 
+
+
 //MIPS
 MIPS mips0(
 	.clk(clk),
@@ -69,9 +74,10 @@ MIPS mips0(
     .wr_en_mem(mips_wr_en)
 );
 
+
 instruction_data_memory #(
     .DATA_WIDTH(MIPS_DATA_WIDTH),
-    .ADDR_WIDTH(MIPS_ADDR_WIDTH-1),
+    .ADDR_WIDTH(MIPS_ADDR_WIDTH),
     .MEMORY_FORMAT("hex")
 )memory(
     .clk(clk),
@@ -81,5 +87,6 @@ instruction_data_memory #(
     .wr_en(mips_wr_en),
     .rd_data(mem_rd_data)
 );
+
 
 endmodule: uart_mips
