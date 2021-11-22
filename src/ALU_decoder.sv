@@ -8,6 +8,7 @@ import MIPS_pkg::*,
 (
     input  logic[1:0]   ALUOp,
     input  mips_funct_e funct,
+    input  mips_op_e    op,
     output ALU_ctrl_e   ALUControl
 );  
 
@@ -62,10 +63,39 @@ always_comb begin
 				end
             endcase
         end
+        2'b11: begin //i Type
+            case(op)
+                MIPS_ADDI_OP: begin
+                    ALUControl = ALU_ADD;
+                end
+                MIPS_ADDIU_OP: begin
+                    ALUControl = ALU_ctrl_e'(4'bXXXX);      //Unsigned operations no implemented yet
+                end
+                MIPS_SLTI_OP: begin
+                    ALUControl = ALU_ctrl_e'(4'bXXXX);      //Compare operations no implemented yet
+                end
+                MIPS_SLTIU_OP: begin
+                    ALUControl = ALU_ctrl_e'(4'bXXXX);      //Compare operations no implemented yet
+                end
+                MIPS_ANDI_OP: begin
+                    ALUControl = ALU_AND;
+                end
+                MIPS_ORI_OP: begin
+                    ALUControl = ALU_OR;
+                end
+                MIPS_LUI_OP: begin
+                    ALUControl = ALU_ADD;
+                end
+                default: begin
+                    ALUControl = ALU_ctrl_e'(4'bXXXX);
+                end
+            endcase
+        end
         default: begin
            ALUControl = ALU_ADD; 
         end
     endcase
 end
+
 
 endmodule: ALU_decoder 

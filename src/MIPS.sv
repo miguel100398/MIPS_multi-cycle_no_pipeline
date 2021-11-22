@@ -164,12 +164,14 @@ MIPS_ctrl_unit ctrl(
 //ALU
 ALU#(
     .LENGTH(MIPS_DATA_WIDTH),
+    .SHAMT_WIDTH(MIPS_SHAMT_WIDTH),
     .REG_INPUTS(1'b0),
     .REG_OUTPUTS(1'b0),
     .CHECK_PARAM(1'b1)
 ) ALU0(
     .clk(clk),
     .rst_n(rst_n),
+    .shamt(R_instruction.shamt),
     .en(1'b1),
     .A(alu_src_A),
     .B(alu_src_B),

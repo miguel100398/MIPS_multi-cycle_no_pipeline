@@ -40,8 +40,7 @@ generate
 endgenerate
 
 //Read rom
-always_ff @(posedge clk) begin
-    data_o <= rom_mem[addr];
-end
+assign data_o = rom_mem[addr];
+
 
 endmodule: ROM

@@ -26,6 +26,7 @@ module ALU
 import ALU_pkg::*;
 #(
     parameter int unsigned LENGTH      = 8,
+    parameter int unsigned SHAMT_WIDTH = 5,
     parameter bit          REG_INPUTS  = 1,
     parameter bit          REG_OUTPUTS = 1,
     parameter bit          CHECK_PARAM = 1
@@ -36,6 +37,7 @@ import ALU_pkg::*;
     input  logic [LENGTH-1:0] A,
     input  logic [LENGTH-1:0] B,
     input  ALU_ctrl_e        ctrl,
+    input  logic [4:0]       shamt,
     output logic [LENGTH-1:0] Result,
     output logic             carry_f,
     output logic             overflow_f,
@@ -43,10 +45,11 @@ import ALU_pkg::*;
 );
 
 //Inputs to be used by the ALU
-logic [LENGTH-1:0] A_int;
-logic [LENGTH-1:0] B_int;
-logic [3:0]       ctrl_reg;
-ALU_ctrl_e        ctrl_int;
+logic [LENGTH-1:0]      A_int;
+logic [LENGTH-1:0]      B_int;
+logic [SHAMT_WIDTH-1:0] shamt_int;
+logic [3:0]             ctrl_reg;
+ALU_ctrl_e              ctrl_int;
 //Output from the ALU
 logic [LENGTH-1:0] Result_int;
 //ALU operations
@@ -105,12 +108,22 @@ generate
             .d(ctrl),
             .q(ctrl_reg)
         );
+        register #(
+            .WIDTH(SHAMT_WIDTH)
+        ) reg_shamt(
+            .clk(clk),
+            .rst_n(rst_n),
+            .en(en),
+            .d(shamt),
+            .q(shamt_int)
+        );
     end // gen_reg_input
     else begin : gen_no_reg_input
         //Combinational inputs
-        assign A_int    = A;
-        assign B_int    = B;
-		assign ctrl_reg = ctrl;
+        assign A_int     = A;
+        assign B_int     = B;
+		assign ctrl_reg  = ctrl;
+        assign shamt_int = shamt;
     end // gen_no_reg_input
 endgenerate
 
@@ -152,8 +165,8 @@ assign and_result               = A_int & B_int;
 assign or_result                = A_int | B_int;
 assign a_n_result               = ~A_int;
 assign xor_result               = A_int ^ B_int;
-assign shl_result               = A_int << B_int[3:0];
-assign shr_result               = A_int >> B_int[3:0];
+assign shl_result               = B_int << shamt_int;
+assign shr_result               = B_int >> shamt_int;
 
 //Multiplex Result
 always_comb begin

@@ -31,6 +31,10 @@ mips_state_e state, next_state;
 
 logic[1:0] ALUOp;
 
+logic halt;
+
+assign halt = (op == MIPS_HALT_OP) && (funct == MIPS_HALT_FUNCT);
+
 
 //FSM
 always_ff @(posedge clk or negedge rst_n) begin
@@ -48,14 +52,17 @@ always_comb begin
             next_state = MIPS_DECODE_S;
         end
         MIPS_DECODE_S: begin
-            if ((op==MIPS_LW_OP) || (op==MIPS_SW_OP)) begin
+            if (halt) begin
+                next_state = MIPS_HALT_S;
+            end
+            else if ((op==MIPS_LW_OP) || (op==MIPS_SW_OP)) begin
                 next_state = MIPS_MEMADDR_S;
             end else if (op==MIPS_RTYPE_OP) begin
                 next_state = MIPS_EXECUTE_S;
             end else if (op==MIPS_BEQ_OP) begin
                 next_state = MIPS_BRANCH_S;
-            end else if (op==MIPS_ADDI_OP) begin
-                next_state = MIPS_ADDIEXECUTE_S;
+            end else if (op>3) begin
+                next_state = MIPS_IEXECUTE_S;
             end else if (op == MIPS_J_OP) begin
                 next_state = MIPS_JUMP_S;
             end else begin
@@ -87,14 +94,17 @@ always_comb begin
         MIPS_BRANCH_S: begin
             next_state = MIPS_FETCH_S;
         end
-        MIPS_ADDIEXECUTE_S: begin
-            next_state = MIPS_ADDIWRITEBACK_S;
+        MIPS_IEXECUTE_S: begin
+            next_state = MIPS_IWRITEBACK_S;
         end
-        MIPS_ADDIWRITEBACK_S: begin
+        MIPS_IWRITEBACK_S: begin
             next_state = MIPS_FETCH_S;
         end
         MIPS_JUMP_S: begin
             next_state = MIPS_FETCH_S;
+        end
+        MIPS_HALT_S: begin
+            next_state = MIPS_HALT_S;
         end
         default: begin
             next_state = MIPS_FETCH_S;
@@ -167,12 +177,12 @@ always_comb begin
             PCSrc   = 2'b01;
             Branch  = 1'b1;
         end
-        MIPS_ADDIEXECUTE_S: begin
+        MIPS_IEXECUTE_S: begin
             ALUSrcA = 1'b1;
             ALUSrcB = 2'b10;
-            ALUOp   = 2'b00;
+            ALUOp   = 2'b11;
         end
-        MIPS_ADDIWRITEBACK_S: begin
+        MIPS_IWRITEBACK_S: begin
             RegDst   = 1'b0;
             MemtoReg = 1'b0;
             RegWrite = 1'b1;
@@ -193,7 +203,7 @@ always_comb begin
             ALUSrcB     = 2'b00;
             RegWrite    = 1'b0;
             Branch      = 1'b0;
-				ALUOp       = 2'b00;
+			ALUOp       = 2'b00;
         end
     endcase
 end
@@ -202,7 +212,8 @@ end
 ALU_decoder decoder(
     .ALUOp(ALUOp),
     .funct(funct),
-    .ALUControl(ALUControl)
+    .ALUControl(ALUControl),
+    .op(op)
 );
 
 

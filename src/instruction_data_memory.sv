@@ -16,13 +16,13 @@ module instruction_data_memory#(
 );
 
 
-logic[ADDR_WIDTH-2:0] addr_mem;
+logic[ADDR_WIDTH-1:0] addr_mem;
 logic[DATA_WIDTH-1:0] instr_mem_rd_data;
 logic[DATA_WIDTH-1:0] data_mem_rd_data;
 logic wr_en_data_memory;
 logic access_data_mem;
 
-assign addr_mem         = addr[ADDR_WIDTH-2:0];
+assign addr_mem         = {1'b0, addr[ADDR_WIDTH-2:0]};
 assign access_data_mem  = addr[ADDR_WIDTH-1];
 
 

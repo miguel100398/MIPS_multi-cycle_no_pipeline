@@ -7,7 +7,6 @@ import UART_pkg::*;
     input  logic        shift_bits,
     input  logic        wait_bit_en,
     input  logic        wait_bit_rst_n,
-    input  uart_data_t  tx_data,
     output logic        wait_bit_done,
     output logic        tx,
     //CSR
@@ -20,6 +19,9 @@ logic parity_bit;
 logic parity_bit_stop;
 logic odd_parity;
 logic even_parity;
+uart_data_t tx_data;
+
+assign tx_data = csr.uart_send_data_csr.data;
 
 //Shift register
 

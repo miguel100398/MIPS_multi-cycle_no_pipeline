@@ -21,6 +21,8 @@ package MIPS_pkg;
     parameter  int unsigned  MIPS_RD_WIDTH          = 5;
     parameter  int unsigned  MIPS_SHAMT_WIDTH       = 5;
     parameter  int unsigned  MIPS_JUMP_WIDTH        = 26;
+    parameter  int unsigned  MIPS_HALT_OP           = 0;
+    parameter  int unsigned  MIPS_HALT_FUNCT        = 63;
 
     ////////////////////////Typedefs//////////////////////////////////////////
     typedef logic[MIPS_REG_ADDR_WIDTH-1:0]    mips_reg_addr_t;
@@ -84,9 +86,10 @@ package MIPS_pkg;
         MIPS_EXECUTE_S       = 4'd6,
         MIPS_ALUWRITEBACK_S  = 4'd7,
         MIPS_BRANCH_S        = 4'd8,
-        MIPS_ADDIEXECUTE_S   = 4'd9,
-        MIPS_ADDIWRITEBACK_S = 4'd10,
-        MIPS_JUMP_S          = 4'd11
+        MIPS_IEXECUTE_S      = 4'd9,
+        MIPS_IWRITEBACK_S    = 4'd10,
+        MIPS_JUMP_S          = 4'd11,
+        MIPS_HALT_S          = 4'd12
     } mips_state_e;
 
     /////////////////////////////Structs////////////////////////////////////////
